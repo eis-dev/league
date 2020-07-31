@@ -19,7 +19,7 @@
                 <h4 class="mb-3 px-1 text-center home-h4" v-text="'Ortam oluştur ya da katıl'"></h4>
             <p class="text-center">Bir ID oluşturarak arkadaşlarınla paylaş<br/>ya da bir ID'ye katıl.</p>
             <label class="mt-4 ml-1 lbl" v-text="'ID Girin:'"></label>
-            <input type="number" class="form-control w-100" v-model="getid"/>
+            <input type="number" class="form-control w-100 id-entry" v-model="getid"/>
             <p class="mt-2 ml-2 req" v-text="'* en az 6 karakter olmalı'"></p>
             <input type="submit" class="btn btn-secondary w-100 mt-3" value="Katıl">
             </form>
@@ -51,7 +51,7 @@
         <div class="container px-md-4 py-4" style="display: none" v-show="$route.params.league && load">
             <div class="row">
                 <div class="col-12">
-                    <h4 class="mb-0 px-1 text-center" v-text="league + ' Ligi'"></h4>
+                    <h4 class="mb-3 px-1 text-center" v-text="league + ' Ligi'"></h4>
                     <img class="position-absolute px-2 cursor-pointer back-btn" src="back.svg" @click="goBack()" />
                 </div>
             </div>
@@ -83,21 +83,21 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-12 matches" :class="{'two':index, 'one':!index}" v-for="(time, index) in matches">
+                <div class="col-12 matches p-0" :class="{'two':index, 'one':!index}" v-for="(time, index) in matches">
                     <h3 class="p-2 mx-auto mt-5 mb-3 text-center font-weight-normal" v-text="index ? 'II. Yarı': 'I. Yarı'"></h3>
-                    <div class="row py-2 match" v-for="item in time">
-                        <div class="col-4 col-md-5 text-right my-auto team-col" v-text="teams[item[0]]"></div>
-                        <div class="col-4 col-md-2 text-center score" :id="item[0] + '_' + item[1]">
-                            <input type="text" class="form-control text-center in score-input" @keyup="getScores()"/><input
+                    <div class="py-1 match flex-center" v-for="item in time">
+                        <span class="my-auto team-col text-right" v-text="teams[item[0]]"></span>
+                        <div class="score flex-center" :id="item[0] + '_' + item[1]">
+                            <input type="text" class="form-control text-center in score-input" @keyup="getScores()"/><strong>:</strong><input
                                 type="text" class="form-control text-center out score-input" @keyup="getScores()"/>
                         </div>
-                        <div class="col-4 col-md-5 my-auto team-col" v-text="teams[item[1]]"></div>
+                        <span class="my-auto team-col" v-text="teams[item[1]]"></span>
                     </div>
                 </div>
-                <div class="col-12 my-3 pb-0 text-right">
+                <div class="col-12 my-3 text-right timer pt-4 px-4 pb-0">
                     Oluşturma : {{ created_at }}<br/>Son Değiştirme : {{ updated_at }}
-                    <div class="text-danger text-left float-left position-absolute h-100 d-flex align-items-center cursor-pointer del" @click="del()">
-                        <img class="mx-2" src="trash.svg" />
+                    <div class="text-danger text-left float-left position-absolute h-100 d-flex align-items-center cursor-pointer del pt-4">
+                        <img class="mx-2" src="trash.svg" @click="del()" />
                     </div>
                 </div>
             </div>
