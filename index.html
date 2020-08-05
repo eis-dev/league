@@ -20,7 +20,7 @@
             <p class="text-center">Bir ID oluşturarak arkadaşlarınla paylaş<br/>ya da bir ID'ye katıl.</p>
             <label class="mt-4 ml-1 lbl" v-text="'ID Girin:'"></label>
             <input type="number" class="form-control w-100 id-entry" v-model="getid"/>
-            <p class="mt-2 ml-2 req" v-text="'* en az 6 karakter olmalı'"></p>
+            <p class="mt-1 ml-1 req" v-text="'* en az 6 karakter olmalı'"></p>
             <input type="submit" class="btn btn-secondary w-100 mt-3" value="Katıl">
             </form>
         </div>
@@ -39,7 +39,7 @@
                             <li class="list-group-item new-l"><b>Yeni Lig Oluştur</b></li>
                         </a>
                         <a v-for="item in list" @click="go(safe_url + '?'+ item.name + '#/' + $route.params.id + '/' + item.name)" class="cursor-pointer">
-                            <li class="list-group-item" v-html="'<b>' + item.league + ' Ligi</b><span>' + item.created_at + '</span><br>' + to_string(item.teams)"></li>
+                            <li class="list-group-item" v-html="'<b>' + item.league + '</b><span>' + item.created_at + '</span><br>' + to_string(item.teams)"></li>
                         </a>
                     </ul>
                 </div>
@@ -51,7 +51,7 @@
         <div class="container px-md-4 py-4" style="display: none" v-show="$route.params.league && load">
             <div class="row">
                 <div class="col-12">
-                    <h4 class="mb-3 px-1 text-center" v-text="league + ' Ligi'"></h4>
+                    <h4 class="mb-3 px-1 text-center" v-text="league + ''"></h4>
                     <img class="position-absolute px-2 cursor-pointer back-btn" src="back.svg" @click="goBack()" />
                 </div>
             </div>
@@ -62,6 +62,9 @@
                         <tr>
                             <th></th>
                             <th>O</th>
+                            <th>G</th>
+                            <th>B</th>
+                            <th>M</th>
                             <th>A</th>
                             <th>Y</th>
                             <th>AV</th>
@@ -75,6 +78,9 @@
                             :tp="values.p[ parseInt(i) ]">
                             <td v-text="teams[ parseInt(i) ]"></td>
                             <td v-text="values.o[ parseInt(i) ]"></td>
+                            <td v-text="values.g[ parseInt(i) ]"></td>
+                            <td v-text="values.b[ parseInt(i) ]"></td>
+                            <td v-text="values.m[ parseInt(i) ]"></td>
                             <td v-text="values.a[ parseInt(i) ]"></td>
                             <td v-text="values.y[ parseInt(i) ]"></td>
                             <td v-text="values.av[ parseInt(i) ]"></td>
@@ -88,14 +94,14 @@
                     <div class="py-1 match flex-center" v-for="item in time">
                         <span class="my-auto team-col text-right" v-text="teams[item[0]]"></span>
                         <div class="score flex-center" :id="item[0] + '_' + item[1]">
-                            <input type="text" class="form-control text-center in score-input" @keyup="getScores()"/><strong>:</strong><input
-                                type="text" class="form-control text-center out score-input" @keyup="getScores()"/>
+                            <input type="text" class="form-control text-center in score-input" :readonly="edit" @keyup="getScores()" @focus="onfocus = true" @blur="onfocus = false"/><strong>:</strong><input
+                                type="text" class="form-control text-center out score-input" :readonly="edit" @keyup="getScores()" @focus="onfocus = true" @blur="onfocus = false"/>
                         </div>
                         <span class="my-auto team-col" v-text="teams[item[1]]"></span>
                     </div>
                 </div>
                 <div class="col-12 my-3 text-right timer pt-4 px-4 pb-0">
-                    Oluşturma : {{ created_at }}<br/>Son Değiştirme : {{ updated_at }}
+                    Oluşturma : {{ created_at }}<br/>Son Değiştirme : {{ updated_at }} {{ onfocus }}
                     <div class="text-danger text-left float-left position-absolute h-100 d-flex align-items-center cursor-pointer del pt-4">
                         <img class="mx-2" src="trash.svg" @click="del()" />
                     </div>
@@ -105,11 +111,11 @@
     </transition>
 
     <transition name="fade">
-        <div class="container my-0 text-center d-flex made-by" v-if="load"><p class="my-auto my-0 py-0 w-100" style="display: none; color: #6c757d" v-show="load">made by ajans123</p></div>
+        <div class="container my-0 text-center d-flex made-by" v-if="load"><p class="my-auto my-0 py-0 w-100" style="display: none; color: #dfe1e2" v-show="load">made by ajans123</p></div>
     </transition>
     <div class="lds-ring" v-show="!load"><div></div><div></div><div></div><div></div></div>
 </div>
-<script src="script.min.js"></script>
+<script src="script.js"></script>
 <script src="jquery.min.js"></script>
 </body>
 </html>

@@ -26,6 +26,9 @@ var app = new Vue({
     created_at: "",
     up: false,
     getid: false,
+    edit: false,
+    onfocus: false,
+    changed: false,
   },
   computed: {
     time2() {
@@ -74,9 +77,7 @@ var app = new Vue({
     },
     del: function () {
       let ok = confirm(
-        this.league[0].toUpperCase() +
-          this.league.slice(1) +
-          " ligi silinsin mi?"
+        this.league[0].toUpperCase() + this.league.slice(1) + " silinsin mi?"
       );
       if (ok == true) {
         axios
@@ -91,6 +92,7 @@ var app = new Vue({
       else return "";
     },
     getScores: function () {
+      this.changed = true;
       let scores = [],
         items = document.getElementsByClassName("match");
       for (let i = 0; i < items.length; i++)
@@ -283,6 +285,9 @@ var app = new Vue({
               }, 200);
               s.name = data.name;
               s.values.o = arr;
+              s.values.g = arr;
+              s.values.b = arr;
+              s.values.m = arr;
               s.values.a = arr;
               s.values.y = arr;
               s.values.p = arr;
@@ -293,123 +298,129 @@ var app = new Vue({
             }
           })
           .catch((error) => {
-            s.league = prompt("Lig adı nedir? ... Ligi");
+            if (s.$route.params.league === "new") {
+              s.league = prompt("Ligin adı nedir?");
 
-            if (s.league === null) {
-              this.goBack();
-              return;
-            }
-
-            let length = prompt("Kaç takım var? örn: 4");
-
-            if (!(length > 0)) {
-              this.goBack();
-              return;
-            }
-
-            for (let i = 1; i <= parseInt(length); i++) {
-              s.teams.push(prompt(i + ". Takımın adı nedir?"));
-              s.t_sort.push(i - 1);
-              arr.push(0);
-            }
-            let teams = s.teams,
-              matches = [];
-
-            for (let item in teams) {
-              for (let item2 in teams) {
-                if (item !== item2) {
-                  let nohave = 0;
-                  if (matches)
-                    for (let match in matches)
-                      if (
-                        (matches[match][0] === item &&
-                          matches[match][1] === item2) ||
-                        (matches[match][0] === item2 &&
-                          matches[match][1] === item)
-                      )
-                        nohave++;
-                  if (nohave === 0) matches.push(this.suffle([item, item2]));
-                }
+              if (s.league === null) {
+                this.goBack();
+                return;
               }
-            }
 
-            matches = s.suffle(matches);
-            new_matches = [];
-            match_arr = [];
+              let length = prompt("Kaç takım var? Rakamla yazın, örn: 5");
 
-            function organize(matches) {
-              let del_matches = [];
+              if (!(length > 0)) {
+                this.goBack();
+                return;
+              }
 
-              for (let item in matches) {
-                let match = matches[item],
-                  diff = true,
-                  tiim = [];
+              for (let i = 1; i <= parseInt(length); i++) {
+                s.teams.push(prompt(i + ". Takımın adı nedir?"));
+                s.t_sort.push(i - 1);
+                arr.push(0);
+              }
+              let teams = s.teams,
+                matches = [];
 
-                for (let m in match) {
-                  if (match_arr.includes(match[m])) diff = false;
-                  tiim.push(match[m]);
-                }
-
-                if (teams.length - match_arr.length < 2) {
-                  if (
-                    !match_arr.includes(tiim[0]) ||
-                    !match_arr.includes(tiim[1])
-                  ) {
-                    diff = true;
+              for (let item in teams) {
+                for (let item2 in teams) {
+                  if (item !== item2) {
+                    let nohave = 0;
+                    if (matches)
+                      for (let match in matches)
+                        if (
+                          (matches[match][0] === item &&
+                            matches[match][1] === item2) ||
+                          (matches[match][0] === item2 &&
+                            matches[match][1] === item)
+                        )
+                          nohave++;
+                    if (nohave === 0) matches.push(this.suffle([item, item2]));
                   }
-                  match_arr = [];
-                }
-
-                if (diff) {
-                  new_matches.push(match);
-                  for (let tt in tiim) match_arr.push(tiim[tt]);
-                } else {
-                  del_matches.push(match);
                 }
               }
 
-              console.log(del_matches);
+              matches = s.suffle(matches);
+              new_matches = [];
+              match_arr = [];
 
-              if (del_matches.length) organize(del_matches);
-            }
+              function organize(matches) {
+                let del_matches = [];
 
-            organize(matches);
+                for (let item in matches) {
+                  let match = matches[item],
+                    diff = true,
+                    tiim = [];
 
-            matches = new_matches;
+                  for (let m in match) {
+                    if (match_arr.includes(match[m])) diff = false;
+                    tiim.push(match[m]);
+                  }
 
-            console.log(matches);
+                  if (teams.length - match_arr.length < 2) {
+                    if (
+                      !match_arr.includes(tiim[0]) ||
+                      !match_arr.includes(tiim[1])
+                    ) {
+                      diff = true;
+                    }
+                    match_arr = [];
+                  }
 
-            s.time1 = matches;
-            s.load = true;
-            s.created_at = s.nowDate();
-            s.updated_at = s.created_at;
-            let time = new Date().getTime(),
-              scores = false;
-            if (s.scores.length) scores = s.scores;
+                  if (diff) {
+                    new_matches.push(match);
+                    for (let tt in tiim) match_arr.push(tiim[tt]);
+                  } else {
+                    del_matches.push(match);
+                  }
+                }
 
-            axios
-              .put(api + s.$route.params.id + "/" + time + ".json", {
-                name: time,
-                league: s.league,
-                scores: scores,
-                teams: s.teams,
-                match: s.time1,
-                updated_at: s.created_at,
-                created_at: s.created_at,
-              })
-              .then((obj) => {
-                s.name = obj.data.name;
-                window.location.hash = "#/" + s.$route.params.id + "/" + s.name;
-              });
+                console.log(del_matches);
 
-            s.values.o = arr;
-            s.values.a = arr;
-            s.values.y = arr;
-            s.values.p = arr;
-            s.values.vs_p = arr;
-            s.values.vs_av = arr;
-            s.values.vs_a = arr;
-            s.values.av = arr;
+                if (del_matches.length) organize(del_matches);
+              }
+
+              organize(matches);
+
+              matches = new_matches;
+
+              console.log(matches);
+
+              s.time1 = matches;
+              s.load = true;
+              s.created_at = s.nowDate();
+              s.updated_at = s.created_at;
+              let time = new Date().getTime(),
+                scores = false;
+              if (s.scores.length) scores = s.scores;
+
+              axios
+                .put(api + s.$route.params.id + "/" + time + ".json", {
+                  name: time,
+                  league: s.league,
+                  scores: scores,
+                  teams: s.teams,
+                  match: s.time1,
+                  updated_at: s.created_at,
+                  created_at: s.created_at,
+                })
+                .then((obj) => {
+                  s.name = obj.data.name;
+                  window.location.hash =
+                    "#/" + s.$route.params.id + "/" + s.name;
+                });
+
+              s.values.o = arr;
+              s.values.g = arr;
+              s.values.b = arr;
+              s.values.m = arr;
+              s.values.a = arr;
+              s.values.y = arr;
+              s.values.p = arr;
+              s.values.vs_p = arr;
+              s.values.vs_av = arr;
+              s.values.vs_a = arr;
+              s.values.av = arr;
+            } else this.goBack();
           });
       }
 
@@ -444,6 +455,9 @@ var app = new Vue({
 
       this.values = {
         o: eval(arr),
+        g: eval(arr),
+        b: eval(arr),
+        m: eval(arr),
         a: eval(arr),
         y: eval(arr),
         p: eval(arr),
@@ -474,13 +488,21 @@ var app = new Vue({
             s.values.av[matches[match][0]] += parseInt(ilk) - parseInt(son);
             s.values.av[matches[match][1]] += parseInt(son) - parseInt(ilk);
 
-            if (parseInt(ilk) > parseInt(son))
+            if (parseInt(ilk) > parseInt(son)) {
               s.values.p[matches[match][0]] += 3;
-            if (parseInt(ilk) < parseInt(son))
+              s.values.g[matches[match][0]]++;
+              s.values.m[matches[match][1]]++;
+            }
+            if (parseInt(ilk) < parseInt(son)) {
               s.values.p[matches[match][1]] += 3;
+              s.values.g[matches[match][1]]++;
+              s.values.m[matches[match][0]]++;
+            }
             if (parseInt(ilk) === parseInt(son)) {
               s.values.p[matches[match][0]] += 1;
               s.values.p[matches[match][1]] += 1;
+              s.values.b[matches[match][0]]++;
+              s.values.b[matches[match][1]]++;
             }
           }
           i++;
@@ -488,28 +510,46 @@ var app = new Vue({
       }
 
       setTimeout(this.sort, 100);
-
-      axios
-        .put(api + this.$route.params.id + "/" + s.name + ".json", {
-          name: s.name,
-          league: s.league,
-          scores: s.scores,
-          teams: s.teams,
-          match: s.time1,
-          updated_at: s.nowDate(),
-          created_at: s.created_at,
-        })
-        .then((obj) => {
-          s.updated_at = obj.data.updated_at;
-
-          clearInterval(s.up);
-          s.up = setInterval(function () {
-            s.engine(s);
-          }, 5000);
-        });
     },
   },
   mounted() {
-    this.engine(this);
+    let s = this;
+    s.engine(s);
+
+    s.up = setInterval(function () {
+      let isGoing = true;
+      let anyMissing = false;
+      $(".score").each(function () {
+        let writed = 0;
+        $(this)
+          .find("input")
+          .each(function () {
+            if ($(this).val()) writed++;
+          });
+        if (writed === 1) anyMissing = true;
+      });
+
+      if (anyMissing || s.onfocus) isGoing = false;
+
+      if (isGoing) {
+        if (s.changed) {
+          axios
+            .put(api + s.$route.params.id + "/" + s.name + ".json", {
+              name: s.name,
+              league: s.league,
+              scores: s.scores,
+              teams: s.teams,
+              match: s.time1,
+              updated_at: s.nowDate(),
+              created_at: s.created_at,
+            })
+            .then((obj) => {
+              s.changed = false;
+              s.updated_at = obj.data.updated_at;
+              s.engine(s);
+            });
+        } else s.engine(s);
+      }
+    }, 5000);
   },
 });
