@@ -238,9 +238,10 @@ div.timer {
 .id-entry {
   border: 1px solid #6c757d !important;
 }
-tbody td {
+/* tbody td {
+  font-weight: 100 !important;
   color: black !important;
-}
+} */
 .form-control:disabled,
 .form-control[readonly] {
   background-color: transparent;
