@@ -255,3 +255,6 @@ div.timer {
 .form-control:focus {
   background: transparent !important;
 }
+.form-control:disabled {
+  color: #495057 !important;
+}
