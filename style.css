@@ -203,7 +203,12 @@ a {
   text-transform: none !important;
 }
 .back-btn {
-  top: calc(100% - 40px) !important;
+  top: calc(100% - 38px) !important;
+  height: 20px !important;
+}
+.lock-btn {
+  top: calc(100% - 38px) !important;
+  right: 15px;
   height: 20px !important;
 }
 .made-by {

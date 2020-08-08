@@ -26,9 +26,10 @@ var app = new Vue({
     created_at: "",
     up: false,
     getid: false,
-    edit: false,
     onfocus: false,
     changed: false,
+    lockable: [],
+    locked: "",
   },
   computed: {
     time2() {
@@ -45,8 +46,15 @@ var app = new Vue({
       url = url.split("?")[0];
       return url;
     },
+    ifLockable() {
+      return this.locked !== this.lockable.join("-");
+    },
   },
   methods: {
+    lockCtrl: function (i) {
+      let ctrl = "-" + this.locked + "-";
+      return ctrl.includes("-" + i + "-");
+    },
     go: function (link) {
       this.load = false;
       setTimeout(function () {
@@ -251,6 +259,7 @@ var app = new Vue({
 
       let arr = [];
       if (s.$route.params.league) {
+        // league açılırken
         axios
           .get(
             api + s.$route.params.id + "/" + s.$route.params.league + ".json"
@@ -262,6 +271,7 @@ var app = new Vue({
               s.teams = data.teams;
               s.created_at = data.created_at;
               s.updated_at = data.updated_at;
+              s.locked = data.locked ? data.locked : "ajans123";
               s.time1 = data.match;
               for (let i = 1; i <= parseInt(data.teams.length); i++) {
                 this.t_sort.push(i - 1);
@@ -374,16 +384,12 @@ var app = new Vue({
                   }
                 }
 
-                console.log(del_matches);
-
                 if (del_matches.length) organize(del_matches);
               }
 
               organize(matches);
 
               matches = new_matches;
-
-              console.log(matches);
 
               s.time1 = matches;
               s.load = true;
@@ -393,6 +399,7 @@ var app = new Vue({
                 scores = false;
               if (s.scores.length) scores = s.scores;
 
+              // league created
               axios
                 .put(api + s.$route.params.id + "/" + time + ".json", {
                   name: time,
@@ -400,6 +407,7 @@ var app = new Vue({
                   scores: scores,
                   teams: s.teams,
                   match: s.time1,
+                  locked: "ajans123",
                   updated_at: s.created_at,
                   created_at: s.created_at,
                 })
@@ -424,6 +432,7 @@ var app = new Vue({
           });
       }
 
+      // list page
       if (s.$route.params.id && !s.$route.params.league) {
         axios.get(api + s.$route.params.id + ".json").then((response) => {
           let object = response.data,
@@ -439,6 +448,47 @@ var app = new Vue({
         });
       }
     },
+    update: function (locker = false) {
+      let s = this;
+      let isGoing = true;
+      let anyMissing = false;
+      $(".score").each(function () {
+        let writed = 0;
+        $(this)
+          .find("input")
+          .each(function () {
+            if ($(this).val()) writed++;
+          });
+        if (writed === 1) anyMissing = true;
+      });
+
+      if (anyMissing || s.onfocus) isGoing = false;
+
+      if (isGoing || locker) {
+        if (s.changed || locker) {
+          axios
+            .put(api + s.$route.params.id + "/" + s.name + ".json", {
+              name: s.name,
+              league: s.league,
+              scores: s.scores,
+              teams: s.teams,
+              match: s.time1,
+              locked: s.locked ? s.locked : "ajans123",
+              updated_at: s.nowDate(),
+              created_at: s.created_at,
+            })
+            .then((obj) => {
+              s.changed = false;
+              s.updated_at = obj.data.updated_at;
+              s.engine(s);
+            });
+        } else s.engine(s);
+      }
+    },
+    lockFunc() {
+      this.locked = this.lockable.join('-');
+      this.update(true);
+    }
   },
   watch: {
     scores(val) {
@@ -509,6 +559,15 @@ var app = new Vue({
         } catch (err) {}
       }
 
+      let lockable = [];
+      $(".score").each(function (index) {
+        let sIn = $(this).find(".in").val(),
+          sOut = $(this).find(".out").val();
+
+        if (sIn && sOut) lockable.push(index);
+      });
+      this.lockable = lockable;
+
       setTimeout(this.sort, 100);
     },
   },
@@ -517,39 +576,7 @@ var app = new Vue({
     s.engine(s);
 
     s.up = setInterval(function () {
-      let isGoing = true;
-      let anyMissing = false;
-      $(".score").each(function () {
-        let writed = 0;
-        $(this)
-          .find("input")
-          .each(function () {
-            if ($(this).val()) writed++;
-          });
-        if (writed === 1) anyMissing = true;
-      });
-
-      if (anyMissing || s.onfocus) isGoing = false;
-
-      if (isGoing) {
-        if (s.changed) {
-          axios
-            .put(api + s.$route.params.id + "/" + s.name + ".json", {
-              name: s.name,
-              league: s.league,
-              scores: s.scores,
-              teams: s.teams,
-              match: s.time1,
-              updated_at: s.nowDate(),
-              created_at: s.created_at,
-            })
-            .then((obj) => {
-              s.changed = false;
-              s.updated_at = obj.data.updated_at;
-              s.engine(s);
-            });
-        } else s.engine(s);
-      }
+      s.update();
     }, 5000);
   },
 });
