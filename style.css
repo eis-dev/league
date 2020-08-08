@@ -255,6 +255,6 @@ div.timer {
 .form-control:focus {
   background: transparent !important;
 }
-.form-control:disabled {
+.form-control:disabled, .form-control[readonly] {
   color: #495057 !important;
 }
