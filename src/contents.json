@@ -1,0 +1,19 @@
+{
+  "app": {
+    "footer": "made by ajans123"
+  },
+  "home": {
+    "title": "Ortam oluştur ya da katıl",
+    "description": "Bir ID oluşturarak arkadaşlarınla paylaş<br/>ya da bir ID'ye katıl.",
+    "input": {
+      "label": "ID Girin:",
+      "button": "Katıl",
+      "valid": "* en az 6 karakter olmalı",
+      "error": "ID en az 6 karakter olmalı."
+    }
+  },
+  "list":{
+    "title": "ID: {id}",
+    "create_button": "Yeni Lig Oluştur"
+  }
+}
