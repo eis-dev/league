@@ -24,7 +24,9 @@
         </div>
 
         <!--button-->
-        <button class="btn btn-primary w-100" v-if="validation" @click="fixing" v-text="$content.create.button"/>
+        <transition name="fade">
+          <button class="btn w-100" :disabled="!validation" @click="fixing" v-text="$content.create.button"/>
+        </transition>
       </div>
     </div>
   </div>
@@ -148,6 +150,7 @@
         }).then((obj) => {
           this.$router.push("/" + this.$route.params.id + "/" + obj.data.name);
           this.$emit("reload", Math.floor(Math.random() * 100000));
+          this.$router.push("/" + this.$route.params.id + "/" + obj.data.name);
         });
       }
     }

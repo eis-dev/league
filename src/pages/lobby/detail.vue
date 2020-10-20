@@ -208,10 +208,10 @@
         let ok = confirm(this.league[0].toUpperCase() + this.league.slice(1) + " silinsin mi?");
         if (ok == true) {
           this.$emit("load", false);
-
           this.$axios.delete(this.$api + this.$route.params.id + "/" + this.name + ".json").then((obj) => {
             this.$router.push("/" + this.id);
             this.$emit("reload", Math.floor(Math.random() * 100000));
+            this.$router.push("/" + this.id);
           });
         }
       },
@@ -395,16 +395,15 @@
         this.values.vs_a = arr;
         this.values.av = arr;
 
-        let s = this;
-        setTimeout(function () {
+        this.$nextTick(function () {
           for (let item in data.scores) {
             if (data.scores[item].split("-").length > 1) {
               document.getElementsByClassName("score-input")[item * 2].value = data.scores[item].split("-")[0];
               document.getElementsByClassName("score-input")[item * 2 + 1].value = data.scores[item].split("-")[1];
             }
           }
-          s.letScores();
-        }, 1);
+          this.letScores();
+        })
 
       }
 
