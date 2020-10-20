@@ -16,14 +16,7 @@
           <thead>
           <tr>
             <th></th>
-            <th>O</th>
-            <th>G</th>
-            <th>B</th>
-            <th>M</th>
-            <th>A</th>
-            <th>Y</th>
-            <th>AV</th>
-            <th>P</th>
+            <th v-for="item in $content.detail.table">{{ item }}</th>
           </tr>
           </thead>
           <tbody>
@@ -53,7 +46,7 @@
 
       <div class="col-12 matches p-0" :class="{'two':index, 'one':!index}" v-for="(time, index) in matches">
         <h3 class="p-2 mx-auto mt-5 mb-3 text-center font-weight-normal"
-            v-text="index ? 'II. Yarı': 'I. Yarı'"></h3>
+            v-text="index ? $content.detail.i_yari: $content.detail.i_yari"></h3>
         <div class="py-1 match flex-center" v-for="(item, i) in time">
                 <span
                   class="my-auto team-col text-right"
@@ -81,7 +74,7 @@
         </div>
       </div>
       <div class="col-12 my-3 text-right timer pt-4 px-4 pb-0">
-        oluşturulma: {{ created_at }}<br/>değiştirilme: {{ updated_at }}
+        {{ $content.detail.created + created_at }}<br/>{{ $content.detail.updated + updated_at }}
         <div
           class="text-danger text-left float-left position-absolute h-100 d-flex align-items-center cursor-pointer del pt-4">
           <img class="mx-2" :src="trashSVG" @click="del()" v-if="(matches[0].length * 2) > locked.split('-').length"/>

@@ -12,8 +12,22 @@
       "error": "ID en az 6 karakter olmalı."
     }
   },
-  "list":{
+  "list": {
     "title": "ID: {id}",
     "create_button": "Yeni Lig Oluştur"
+  },
+  "create": {
+    "title": "ID: {id}",
+    "what_is_league_name": "Ligin adı nedir?",
+    "what_is_length": "Kaç takım var?",
+    "what_is_team_name": ". Takımın adı?",
+    "button": "Ligi Oluştur"
+  },
+  "detail": {
+    "i_yari": "I. Yarı",
+    "ii_yari": "II. Yarı",
+    "created": "oluşturulma: ",
+    "updated": "değiştirilme: ",
+    "table": ["O", "G", "B", "M", "A", "Y", "AV", "P"]
   }
 }

@@ -18,16 +18,13 @@
 
         <!--teams-->
         <div class="mb-4 pt-1 pb-2" v-for="item in length">
-          <label :for="item + '_team'" class="text-primary" v-text="item + '. Takımın adı?'"/>
-          <input type="text" :id="item + '_team'" spellcheck="false" v-model="teams[item - 1]"
-                 class="form-control w-100 p-0"
-                 autocomplete="off"/>
+          <label :for="item + '_team'" class="text-primary" v-text="item + $content.create.what_is_team_name"/>
+          <input type="text" :id="item + '_team'" spellcheck="false" v-model="teams[item - 1]" autocomplete="off"
+                 class="form-control w-100 p-0"/>
         </div>
 
-        {{ $reload }}
-
-        <button class="btn btn-primary w-100" v-if="validation" @click="fixing">Ligi Oluştur</button>
-
+        <!--button-->
+        <button class="btn btn-primary w-100" v-if="validation" @click="fixing" v-text="$content.create.button"/>
       </div>
     </div>
   </div>
@@ -44,14 +41,14 @@
         teams: [],
         elements: {
           league: {
-            title: "Ligin adı nedir?",
+            title: this.$content.create.what_is_league_name,
             type: "text",
-            value: "Test"
+            value: ""
           },
           length: {
-            title: "Kaç takım var?",
+            title: this.$content.create.what_is_length,
             type: "number",
-            value: "3"
+            value: ""
           }
         }
       }
@@ -69,7 +66,8 @@
 
         try {
           if (teams.length === len && !teams.includes(undefined) && !teams.includes("")) boolean = true;
-        } catch(err) {}
+        } catch (err) {
+        }
 
         return len > 1 && lenName > 0 && boolean
       }
