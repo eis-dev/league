@@ -54,15 +54,14 @@
                 ></span>
           <div class="score flex-center" :id="item[0] + '_' + item[1]">
             <input
-              type="text"
+              type="number"
               class="form-control text-center in score-input"
               :readonly="lockCtrl(i+(time.length*index))"
               @keyup="getScores()"
               @focus="onfocus = true"
               @blur="onfocus = false"
-            /><strong>:</strong
-          ><input
-            type="text"
+            /><strong>:</strong><input
+            type="number"
             class="form-control text-center out score-input"
             :readonly="lockCtrl(i+(time.length*index))"
             @keyup="getScores()"
@@ -91,7 +90,7 @@
 
   export default {
     name: "detail.vue",
-    props: ["resp"],
+    props: ["resp", "nowDate"],
     data() {
       return {
         backSVG: backSVG,
@@ -201,19 +200,6 @@
 
         s.t_sort = sort;
       },
-      nowDate: function () {
-        let date = new Date();
-        let day = date.getDate();
-        if (day < 10) day = "0" + day;
-        let month = date.getMonth() + 1;
-        if (month < 10) month = "0" + month;
-        let hours = date.getHours();
-        if (hours < 10) hours = "0" + hours;
-        let minutes = date.getMinutes();
-        if (minutes < 10) minutes = "0" + minutes;
-        date = day + "." + month + "." + date.getFullYear() + " - " + hours + ":" + minutes;
-        return date;
-      },
       lockCtrl: function (i) {
         let ctrl = "-" + this.locked + "-";
         return ctrl.includes("-" + i + "-");
@@ -221,6 +207,8 @@
       del: function () {
         let ok = confirm(this.league[0].toUpperCase() + this.league.slice(1) + " silinsin mi?");
         if (ok == true) {
+          this.$emit("load", false);
+
           this.$axios.delete(this.$api + this.$route.params.id + "/" + this.name + ".json").then((obj) => {
             this.$router.push("/" + this.id);
             this.$emit("reload", Math.floor(Math.random() * 100000));
@@ -257,7 +245,7 @@
               teams: this.teams,
               match: this.time1,
               locked: this.locked ? this.locked : "ajans123",
-              updated_at: this.nowDate(),
+              updated_at: this.nowDate,
               created_at: this.created_at,
             }).then((obj) => {
               this.changed = false;

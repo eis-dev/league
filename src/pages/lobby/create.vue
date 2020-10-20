@@ -35,6 +35,7 @@
 
   export default {
     name: "create",
+    props: ["nowDate"],
     data() {
       return {
         backSVG: backSVG,
@@ -73,19 +74,6 @@
       }
     },
     methods: {
-      nowDate() {
-        let date = new Date();
-        let day = date.getDate();
-        if (day < 10) day = "0" + day;
-        let month = date.getMonth() + 1;
-        if (month < 10) month = "0" + month;
-        let hours = date.getHours();
-        if (hours < 10) hours = "0" + hours;
-        let minutes = date.getMinutes();
-        if (minutes < 10) minutes = "0" + minutes;
-        date = day + "." + month + "." + date.getFullYear() + " - " + hours + ":" + minutes;
-        return date;
-      },
       suffle(a) {
         let j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -144,7 +132,9 @@
         this.save(new_matches);
       },
       save(match) {
-        let time = new Date().getTime(), date = this.nowDate();
+        this.$emit("load", false);
+
+        let time = new Date().getTime(), date = this.nowDate;
 
         this.$axios.put(this.$api + this.$route.params.id + "/" + time + ".json", {
           league: this.elements.league.value,
