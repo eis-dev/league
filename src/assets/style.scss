@@ -448,12 +448,18 @@ body {
         min-height: auto !important
       }
       .person {
-        border-radius: 1rem;
         margin-top: 1rem;
         color: black !important;
         line-height: 1.7rem;
         margin-bottom: 3rem;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 1.75rem;
       }
+
+      .person:first-child {
+        border: 0 !important;
+      }
+
       .team-title {
         font-weight: 400 !important;
         text-align: center !important;
@@ -479,6 +485,21 @@ body {
         tr:nth-child(even) {
           background: #f6f6f6;
         }
+      }
+
+      .star-img {
+        width: 22px;
+        margin-left: .25rem;
+        margin-right: .25rem;
+      }
+
+      .stars {
+        margin-top: -.75rem;
+        margin-bottom: .5rem;
+      }
+
+      .champs {
+        font-weight: 600 !important;
       }
     }
 

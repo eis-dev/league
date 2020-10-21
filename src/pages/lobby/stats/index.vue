@@ -11,6 +11,15 @@
       <div class="col-12">
         <div v-for="(item, key) in stats" class="person d-block">
           <h5 class="team-title">{{ key.charAt(0).toUpperCase() + key.slice(1) }}</h5>
+
+          <div class="stars text-center">
+            <img v-for="star in item['Yıldız']" class="star-img" :src="starSVG"/>
+          </div>
+
+          <div class="champs text-center">
+            {{ item["Şampiyonluk"] }} Şampiyonluk
+          </div>
+
           <table>
             <tr v-for="name in keys">
               <td v-text="name + ' sayısı:'"></td>
@@ -20,7 +29,7 @@
         </div>
       </div>
 
-      <div class="col-12 px-0 mt-5">
+      <div class="col-12 px-0 mt-5 d-none">
         <detail v-for="item in resp" :niche="resp[item.name]"/>
       </div>
     </div>
@@ -29,6 +38,7 @@
 
 <script>
   import backSVG from "../../../assets/svg/back.svg";
+  import starSVG from "../../../assets/svg/star.svg";
   import detail from "../detail";
 
   export default {
@@ -38,8 +48,9 @@
     data() {
       return {
         backSVG: backSVG,
+        starSVG: starSVG,
         stats: {},
-        keys: ["Lig", "Maç", "Galibiyet", "Beraberlik", "Mağlubiyet", "Attığı gol", "Yediği gol", "Averaj", "Puan", "Şampiyonluk"]
+        keys: ["Lig", "Maç", "Galibiyet", "Beraberlik", "Mağlubiyet", "Attığı gol", "Yediği gol", "Averaj", "Puan"]
       }
     },
     methods: {
@@ -49,7 +60,7 @@
         $(".detail-page").each(function () {
           $(this).find("table tbody tr").each(function (i) {
             let team_name = $(this).find("td:nth-child(1)").text().toLowerCase().trim();
-            if (stats[team_name] === undefined) stats[team_name] = {"Lig": 0, "Sıra": {}, "Şampiyonluk": 0};
+            if (stats[team_name] === undefined) stats[team_name] = {"Lig": 0, "Sıra": {}, "Şampiyonluk": 0, "Yıldız": 0};
             stats[team_name]["Lig"]++;
 
             if (stats[team_name]["Sıra"][i + 1] > -1) stats[team_name]["Sıra"][i + 1]++;
@@ -57,6 +68,7 @@
 
             if (stats[team_name]["Sıra"][1]) {
               stats[team_name]["Şampiyonluk"] = stats[team_name]["Sıra"][1];
+              stats[team_name]["Yıldız"] = Math.floor(stats[team_name]["Şampiyonluk"] / 5);
             }
 
             let values = ["Maç", "Galibiyet", "Beraberlik", "Mağlubiyet", "Attığı gol", "Yediği gol", "Averaj", "Puan"];

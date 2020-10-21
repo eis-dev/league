@@ -1,5 +1,5 @@
 <template>
-  <div class="container px-md-4 py-4 detail-page">
+  <div :class="'container px-md-4 py-4 detail-page ' + divId">
     <div class="row">
       <div class="col-12">
         <h4 class="mb-3 px-1 text-center" :class="{'pt-0 pb-2': niche}" v-text="league"></h4>
@@ -147,8 +147,8 @@
         let say = 0;
 
         for (let item in mac) {
-          let goal_i = parseInt($("#" + mac[item]).find(".in").val()),
-            goal_o = parseInt($("#" + mac[item]).find(".out").val());
+          let goal_i = parseInt($(s.divIdClass + "#" + mac[item]).find(".in").val()),
+            goal_o = parseInt($(s.divIdClass + "#" + mac[item]).find(".out").val());
 
           if (goal_i > -1 && goal_o > -1) {
             // GET ID
@@ -230,7 +230,7 @@
       update: function (locker = false) {
         let isGoing = true, anyMissing = false;
 
-        $(".score").each(function () {
+        $(this.divIdClass + ".score").each(function () {
           let writed = 0;
           $(this).find("input").each(function () {
             if ($(this).val()) writed++;
@@ -332,7 +332,7 @@
         }
 
         let lockable = [];
-        $(".score").each(function (index) {
+        $(this.divIdClass + ".score").each(function (index) {
           let sIn = $(this).find(".in").val(), sOut = $(this).find(".out").val();
 
           if (sIn && sOut) lockable.push(index);
@@ -365,6 +365,12 @@
       },
       ifLockable() {
         return this.locked !== this.lockable.join("-");
+      },
+      divId() {
+        return Math.floor(Math.random() * 9999999)
+      },
+      divIdClass() {
+        return "." + this.divId + " ";
       }
     },
     mounted() {
