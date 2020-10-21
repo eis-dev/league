@@ -428,5 +428,59 @@ body {
       -moz-appearance: textfield !important;
     }
 
+    .stats-icon {
+      margin-top: 16px !important;
+      opacity: .75 !important;
+      transform: scale(-1) !important;
+    }
+
+    .stats-page {
+      .detail-page {
+        padding: 1rem !important;
+        h4 {
+          font-size: 20px !important;
+        }
+        .col-12 {
+          padding: 0 !important;
+        }
+      }
+      .container {
+        min-height: auto !important
+      }
+      .person {
+        border-radius: 1rem;
+        margin-top: 1rem;
+        color: black !important;
+        line-height: 1.7rem;
+        margin-bottom: 3rem;
+      }
+      .team-title {
+        font-weight: 400 !important;
+        text-align: center !important;
+        margin-bottom: 1rem !important;
+        color: #5190cd;
+      }
+      table {
+        width: 100% !important;
+
+        td {
+          padding: .5rem .75rem;
+          text-transform: none;
+        }
+
+        td:nth-child(1) {
+          font-weight: 600 !important;
+        }
+
+        td:nth-child(2) {
+          text-align: right !important;
+        }
+
+        tr:nth-child(even) {
+          background: #f6f6f6;
+        }
+      }
+    }
+
   }
 }

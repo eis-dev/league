@@ -1,15 +1,15 @@
 <template>
-  <div class="container px-md-4 py-4">
+  <div class="container px-md-4 py-4 detail-page">
     <div class="row">
       <div class="col-12">
-        <h4 class="mb-3 px-1 text-center" v-text="league"></h4>
+        <h4 class="mb-3 px-1 text-center" :class="{'pt-0 pb-2': niche}" v-text="league"></h4>
         <img class="position-absolute cursor-pointer back-btn mt-3 px-0" :src="backSVG"
-             @click="$router.push('/' + id)"/>
+             @click="$router.push('/' + id)" v-show="!niche"/>
         <img class="position-absolute px-2 cursor-pointer lock-btn" :src="lockSVG" @click="lockFunc()"
-             v-if="locked !== lockable.join('-')"/>
+             v-if="locked !== lockable.join('-')" v-show="!niche"/>
       </div>
     </div>
-    <div class="row pt-3">
+    <div class="row" :class="{'pt-3': !niche}">
       <div class="col-12 mb-0 px-0">
 
         <table class="table mb-0">
@@ -44,39 +44,41 @@
         </table>
       </div>
 
-      <div class="col-12 matches p-0" :class="{'two':index, 'one':!index}" v-for="(time, index) in matches">
-        <h3 class="p-2 mx-auto mt-5 mb-3 text-center font-weight-normal"
-            v-text="index ? $content.detail.i_yari: $content.detail.i_yari"></h3>
-        <div class="py-1 match flex-center" v-for="(item, i) in time">
+      <div v-show="!niche">
+        <div class="col-12 matches p-0" :class="{'two':index, 'one':!index}" v-for="(time, index) in matches">
+          <h3 class="p-2 mx-auto mt-5 mb-3 text-center font-weight-normal"
+              v-text="index ? $content.detail.i_yari: $content.detail.i_yari"></h3>
+          <div class="py-1 match flex-center" v-for="(item, i) in time">
                 <span
                   class="my-auto team-col text-right"
                   v-text="teams[item[0]]"
                 ></span>
-          <div class="score flex-center" :id="item[0] + '_' + item[1]">
-            <input
+            <div class="score flex-center" :id="item[0] + '_' + item[1]">
+              <input
+                type="number"
+                class="form-control text-center in score-input"
+                :readonly="lockCtrl(i+(time.length*index))"
+                @keyup="getScores()"
+                @focus="onfocus = true"
+                @blur="onfocus = false"
+              /><strong>:</strong><input
               type="number"
-              class="form-control text-center in score-input"
+              class="form-control text-center out score-input"
               :readonly="lockCtrl(i+(time.length*index))"
               @keyup="getScores()"
               @focus="onfocus = true"
               @blur="onfocus = false"
-            /><strong>:</strong><input
-            type="number"
-            class="form-control text-center out score-input"
-            :readonly="lockCtrl(i+(time.length*index))"
-            @keyup="getScores()"
-            @focus="onfocus = true"
-            @blur="onfocus = false"
-          />
+            />
+            </div>
+            <span class="my-auto team-col" v-text="teams[item[1]]"></span>
           </div>
-          <span class="my-auto team-col" v-text="teams[item[1]]"></span>
         </div>
-      </div>
-      <div class="col-12 my-3 text-right timer pt-4 px-4 pb-0">
-        {{ $content.detail.created + created_at }}<br/>{{ $content.detail.updated + updated_at }}
-        <div
-          class="text-danger text-left float-left position-absolute h-100 d-flex align-items-center cursor-pointer del pt-4">
-          <img class="mx-2" :src="trashSVG" @click="del()" v-if="(matches[0].length * 2) > locked.split('-').length"/>
+        <div class="col-12 my-3 text-right timer pt-4 px-4 pb-0">
+          {{ $content.detail.created + created_at }}<br/>{{ $content.detail.updated + updated_at }}
+          <div
+            class="text-danger text-left float-left position-absolute h-100 d-flex align-items-center cursor-pointer del pt-4">
+            <img class="mx-2" :src="trashSVG" @click="del()" v-if="(matches[0].length * 2) > locked.split('-').length"/>
+          </div>
         </div>
       </div>
     </div>
@@ -90,7 +92,7 @@
 
   export default {
     name: "detail.vue",
-    props: ["resp", "nowDate"],
+    props: ["resp", "nowDate", "niche"],
     data() {
       return {
         backSVG: backSVG,
@@ -199,6 +201,8 @@
         for (let v in vals) sort.push(vals[v].split(".")[1]);
 
         s.t_sort = sort;
+
+        // this.$emit("sort", sort);
       },
       lockCtrl: function (i) {
         let ctrl = "-" + this.locked + "-";
@@ -366,7 +370,7 @@
     mounted() {
       let detailId = this.$route.params.detail;
 
-      let data = this.resp[detailId], arr = [];
+      let data = this.niche ? this.niche : this.resp[detailId], arr = [];
 
       if (this.scores.toString() !== data.scores.toString()) {
         this.league = data.league;

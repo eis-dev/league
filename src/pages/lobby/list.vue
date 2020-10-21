@@ -5,6 +5,8 @@
       <div class="col-12 mb-4">
         <h4 class="mb-3 px-1 text-center" v-text="$content.list.title.replace('{id}', id)"/>
         <img class="position-absolute cursor-pointer back-btn mt-3 px-0" :src="backSVG" @click="$router.push('/')"/>
+        <img class="position-absolute px-2 cursor-pointer lock-btn stats-icon" :src="statsSVG"
+             @click="$router.push('/'+id+'/stats')"/>
       </div>
       <!--head end-->
 
@@ -34,6 +36,7 @@
 
 <script>
   import backSVG from "../../assets/svg/back.svg";
+  import statsSVG from "../../assets/svg/stats.svg";
 
   export default {
     name: "list",
@@ -41,7 +44,8 @@
     data() {
       return {
         list: {},
-        backSVG: backSVG
+        backSVG: backSVG,
+        statsSVG: statsSVG
       }
     },
     mounted() {

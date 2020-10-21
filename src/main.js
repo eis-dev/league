@@ -15,10 +15,11 @@ import home from './pages/home';
 import lobby from './pages/lobby';
 import list from './pages/lobby/list';
 import create from './pages/lobby/create';
+import stats from './pages/lobby/stats';
 import detail from './pages/lobby/detail';
-//#endregion
 
 Vue.component('made-by', madeBy);
+//#endregion
 
 //#region Vue Router
 import VueRouter from 'vue-router'
@@ -42,6 +43,10 @@ const router = new VueRouter({
         {
           path: '/:id/create',
           component: create
+        },
+        {
+          path: '/:id/stats',
+          component: stats
         },
         {
           path: '/:id/:detail',

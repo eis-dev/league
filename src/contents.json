@@ -29,5 +29,8 @@
     "created": "oluşturulma: ",
     "updated": "değiştirilme: ",
     "table": ["O", "G", "B", "M", "A", "Y", "AV", "P"]
+  },
+  "stats": {
+    "title": "İstatistikler"
   }
 }
