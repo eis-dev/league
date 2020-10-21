@@ -7,7 +7,7 @@
              @click="$router.push('/' + $route.params.id)"/>
       </div>
     </div>
-    <div class="row pt-3">
+    <div class="row pt-2">
       <div class="col-12">
         <div v-for="(item, key) in stats" class="person d-block">
           <h5 class="team-title">{{ key.charAt(0).toUpperCase() + key.slice(1) }}</h5>
@@ -25,6 +25,10 @@
               <td v-text="name + ' sayısı:'"></td>
               <td v-text="item[name]"></td>
             </tr>
+            <tr>
+              <td>Galibiyet oranı:</td>
+              <td v-text="'%' + ((item['Galibiyet'] / item['Maç']) * 100).toFixed(1)"/>
+            </tr>
           </table>
         </div>
       </div>
@@ -37,9 +41,9 @@
 </template>
 
 <script>
-  import backSVG from "../../../assets/svg/back.svg";
-  import starSVG from "../../../assets/svg/star.svg";
-  import detail from "../detail";
+  import backSVG from "../../assets/svg/back.svg";
+  import starSVG from "../../assets/svg/star.svg";
+  import detail from "./detail";
 
   export default {
     name: "stats",
@@ -83,6 +87,8 @@
             }
           })
         });
+
+
 
         this.stats = stats;
       }
