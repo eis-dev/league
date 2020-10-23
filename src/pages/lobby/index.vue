@@ -41,9 +41,6 @@
           this.resp = response.data;
           this.load = true;
         });
-      },
-      look(event) {
-        console.log(event);
       }
     },
     computed: {

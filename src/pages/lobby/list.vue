@@ -6,7 +6,7 @@
         <h4 class="mb-3 px-1 text-center" v-text="$content.list.title.replace('{id}', id)"/>
         <img class="position-absolute cursor-pointer back-btn mt-3 px-0" :src="backSVG" @click="$router.push('/')"/>
         <img class="position-absolute px-2 cursor-pointer lock-btn stats-icon" :src="statsSVG"
-             @click="$router.push('/'+id+'/stats')"/>
+             @click="openStats"/>
       </div>
       <!--head end-->
 
@@ -46,6 +46,12 @@
         list: {},
         backSVG: backSVG,
         statsSVG: statsSVG
+      }
+    },
+    methods: {
+      openStats() {
+        this.$emit('load', false);
+        setTimeout(() => this.$router.push('/' + this.id + '/stats'), 50);
       }
     },
     mounted() {

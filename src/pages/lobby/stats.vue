@@ -8,6 +8,9 @@
       </div>
     </div>
     <div class="row pt-2">
+      <div class="col-12 px-0 mt-5 d-none">
+        <detail v-for="item in resp" :niche="resp[item.name]" @worked="worked = worked.filter(x => x !== $event); worked.push($event)"/>
+      </div>
       <div class="col-12">
         <div v-for="(item, key) in stats" class="person d-block">
           <h5 class="team-title">{{ key.charAt(0).toUpperCase() + key.slice(1) }}</h5>
@@ -20,21 +23,13 @@
             {{ item["Şampiyonluk"] }} Şampiyonluk
           </div>
 
-          <table>
+          <table class="loaded">
             <tr v-for="name in keys">
-              <td v-text="name + ' sayısı:'"></td>
+              <td v-text="name"></td>
               <td v-text="item[name]"></td>
-            </tr>
-            <tr>
-              <td>Galibiyet oranı:</td>
-              <td v-text="'%' + ((item['Galibiyet'] / item['Maç']) * 100).toFixed(1)"/>
             </tr>
           </table>
         </div>
-      </div>
-
-      <div class="col-12 px-0 mt-5 d-none">
-        <detail v-for="item in resp" :niche="resp[item.name]"/>
       </div>
     </div>
   </div>
@@ -54,13 +49,15 @@
         backSVG: backSVG,
         starSVG: starSVG,
         stats: {},
-        keys: ["Lig", "Maç", "Galibiyet", "Beraberlik", "Mağlubiyet", "Attığı gol", "Yediği gol", "Averaj", "Puan"]
+        worked: [],
+        keys: ["Lig", "Maç", "Galibiyet", "Beraberlik", "Mağlubiyet", "Attığı gol", "Yediği gol", "Averaj", "Puan", "Başarı"]
       }
     },
     methods: {
       calc() {
-        let s = this, stats = {};
+        let stats = {};
 
+        // dom mapping
         $(".detail-page").each(function () {
           $(this).find("table tbody tr").each(function (i) {
             let team_name = $(this).find("td:nth-child(1)").text().toLowerCase().trim();
@@ -75,6 +72,7 @@
               stats[team_name]["Yıldız"] = Math.floor(stats[team_name]["Şampiyonluk"] / 5);
             }
 
+
             let values = ["Maç", "Galibiyet", "Beraberlik", "Mağlubiyet", "Attığı gol", "Yediği gol", "Averaj", "Puan"];
 
             let index = 1;
@@ -88,17 +86,23 @@
           })
         });
 
+        // stats mapping
+        for (let key in stats) {
+          let item = stats[key];
+          item["Başarı"] = parseFloat(((item['Puan'] / (item['Maç'] * 3)) * 100).toFixed(1));
+          item["Toplam"] = item["Şampiyonluk"] + (item["Başarı"] / 100);
+        }
 
+        // sort and publish
+        this.stats = Object.fromEntries(Object.entries(stats).sort(([, a], [, b]) => b["Toplam"] - a["Toplam"]));
 
-        this.stats = stats;
+        this.$emit('load', true);
       }
     },
-    mounted() {
-      setTimeout(() => this.calc(), 500);
-      setTimeout(() => this.calc(), 1000);
-      setTimeout(() => this.calc(), 1500);
-      setTimeout(() => this.calc(), 2000);
-      setTimeout(() => this.calc(), 2500);
+    watch: {
+      worked(val) {
+        if (Object.keys(this.resp).length === val.length) this.$nextTick(() => this.calc());
+      }
     }
   }
 </script>

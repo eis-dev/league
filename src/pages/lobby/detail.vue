@@ -202,7 +202,7 @@
 
         s.t_sort = sort;
 
-        // this.$emit("sort", sort);
+        this.$emit("worked", s.name);
       },
       lockCtrl: function (i) {
         let ctrl = "-" + this.locked + "-";
