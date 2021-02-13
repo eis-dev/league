@@ -80,7 +80,7 @@ import content from "./contents.json";
 
 //#region Global Variables
 Vue.prototype.$content = content;
-Vue.prototype.$api = "https://lig123.firebaseio.com/id/";
+Vue.prototype.$api = "https://lig123.firebaseio.com/VG2yxSaqLJvjfK3JMGJqjyYxML5zmceAQUYV5nWx/";
 //#endregion
 
 //#region Root Instance
